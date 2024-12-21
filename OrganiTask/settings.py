@@ -1,22 +1,36 @@
-from pathlib import Path
 from datetime import timedelta
+import os
 from decouple import config
+from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Now use `config` directly to access environment variables
-DEBUG = config('DEBUG', default=True, cast=bool)  # Reads from .env
-SECRET_KEY = config('SECRET_KEY')  # Reads from .env
-DATABASE_URL = config('DATABASE_URL')  # Reads from .env
+# Security settings
+SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
+# Database configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME', default=''),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
+    }
+}
 
+# For local development, if DB is not yet set up, you can use SQLite:
+if not config('DB_NAME', default=None):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')  # Fetch SECRET_KEY from .env
+# Other configurations (static files, media files, etc.) go here...
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool, default=False)
 
 
 AUTH_USER_MODEL = 'users.CustomUser'
