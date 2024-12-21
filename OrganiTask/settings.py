@@ -14,13 +14,14 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default=''),
-        'USER': config('DB_USER', default=''),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': '5432',
     }
 }
+
 
 # For local development, if DB is not yet set up, you can use SQLite:
 if not config('DB_NAME', default=None):
@@ -74,6 +75,12 @@ CORS_ALLOWED_ORIGINS = []
 
 
 ALLOWED_HOSTS = ['https://drf-api-n9oj.onrender.com', '127.0.0.1', 'render.com']
+
+# Security settings
+CSRF_TRUSTED_ORIGINS = [
+    "https://drf-api-n9oj.onrender.com",
+]
+
 
 
 
