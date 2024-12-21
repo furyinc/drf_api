@@ -1,15 +1,15 @@
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Now use `config` directly to access environment variables
+DEBUG = config('DEBUG', default=True, cast=bool)  # Reads from .env
+SECRET_KEY = config('SECRET_KEY')  # Reads from .env
+DATABASE_URL = config('DATABASE_URL')  # Reads from .env
 
-
-# Import config from decouple
-from decouple import config
-from decouple import Config, Csv
-config = Config()
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
