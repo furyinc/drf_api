@@ -69,7 +69,7 @@ MIDDLEWARE = [
 ]
 
 # Allow requests from any domain for testing (for production, be more specific)
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = ['https://drf-api-n9oj.onrender.com']
 
 
@@ -99,8 +99,13 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
+    'content-length',
+    'host',
+    'user-agent',
     'x-requested-with',
     'accept',
+    'accept-encoding',
+    'connection',
     'origin',
     'user-agent',
     'x-csrftoken',
