@@ -1,7 +1,7 @@
 from datetime import timedelta
 import os
-from decouple import config
 from pathlib import Path
+from decouple import config
 
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -132,7 +132,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'OrganiTask.wsgi.application'
 
 
-from decouple import config
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL
