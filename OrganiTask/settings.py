@@ -70,7 +70,7 @@ MIDDLEWARE = [
 
 # Allow requests from any domain for testing (for production, be more specific)
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS = ['https://drf-api-n9oj.onrender.com']
 
 
 
