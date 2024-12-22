@@ -64,7 +64,7 @@ CORS_ALLOWED_ORIGINS = ['https://drf-api-n9oj.onrender.com']
 
 
 
-ALLOWED_HOSTS = ['drf-api-n9oj.onrender.com', '127.0.0.1', 'render.com']
+ALLOWED_HOSTS = ['drf-api-99u1.onrender.com', '127.0.0.1', 'render.com']
 
 
 # Allow specific HTTP methods (e.g., POST, GET) if needed
