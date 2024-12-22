@@ -1,8 +1,9 @@
 from datetime import timedelta
 import os
 from pathlib import Path
-from decouple import config
 import dj_database_url
+import os
+from decouple import config
 
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,10 +19,15 @@ DEBUG = os.environ.get('DEBUG') == 'False'
 # pip install dj-database-url
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),  # Default to 5432 if not set
+    }
 }
-
-
 
 
 AUTH_USER_MODEL = 'users.CustomUser'
