@@ -2,35 +2,25 @@ from datetime import timedelta
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = os.environ.get('DEBUG') == 'False'
 
 # Database configuration
+
+
+# Install dj-database-url if not already installed:
+# pip install dj-database-url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 }
 
-
-# For local development, if DB is not yet set up, you can use SQLite:
-if not config('DB_NAME', default=None):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-
-# Other configurations (static files, media files, etc.) go here...
 
 
 
