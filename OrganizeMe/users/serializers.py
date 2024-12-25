@@ -11,6 +11,33 @@ class VerifyEmailSerializer(serializers.Serializer):
     email = serializers.EmailField()
     verification_code = serializers.CharField(max_length=6)  # Change to CharField
 
+
+
+
+
+# class LoginSerializer(serializers.Serializer):
+#     email = serializers.EmailField()
+#     password = serializers.CharField(write_only=True)
+#
+#     def validate(self, attrs):
+#         email = attrs.get('email')
+#         password = attrs.get('password')
+#
+#         user = User.objects.filter(email=email).first()
+#         if not user or not user.check_password(password):
+#             raise serializers.ValidationError("Invalid credentials")
+#         if not user.is_verified:
+#             raise serializers.ValidationError("Email not verified")
+#
+#         tokens = RefreshToken.for_user(user)
+#         return {
+#             'refresh': str(tokens),
+#             'access': str(tokens.access_token),
+#         }
+
+
+
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
@@ -19,17 +46,30 @@ class LoginSerializer(serializers.Serializer):
         email = attrs.get('email')
         password = attrs.get('password')
 
+        # Get the user by email
         user = User.objects.filter(email=email).first()
+
+        # Check if the user exists and the password is correct
         if not user or not user.check_password(password):
             raise serializers.ValidationError("Invalid credentials")
+
+        # Ensure the user is verified
         if not user.is_verified:
             raise serializers.ValidationError("Email not verified")
 
+        # Generate tokens using SimpleJWT
         tokens = RefreshToken.for_user(user)
+
+        # Return tokens and the username
         return {
             'refresh': str(tokens),
             'access': str(tokens.access_token),
+            'username': user.username  # Include username in the response
         }
+
+
+
+
 
 
 
