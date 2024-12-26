@@ -28,6 +28,7 @@ class TaskListView(APIView):
 
 
 
+
 class TaskDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
