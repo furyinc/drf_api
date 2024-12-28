@@ -62,6 +62,20 @@ class TaskDetailView(APIView):
         task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def patch(self, request, pk):
+        try:
+            task = Task.objects.get(pk=pk, user=request.user)
+        except Task.DoesNotExist:
+            return Response({'detail': 'Not found or not authorized to update this task.'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        # Toggle the `completed` field
+        task.completed = not task.completed
+        task.save()
+
+        serializer = TaskSerializer(task)
+        return Response(serializer.data)
+
 
 
 
