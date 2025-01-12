@@ -10,6 +10,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
+import logging
 
 User = get_user_model()
 
@@ -55,6 +56,7 @@ class LoginView(generics.GenericAPIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
+logger = logging.getLogger(__name__)
 
 
 class LogoutView(generics.GenericAPIView):
@@ -62,25 +64,18 @@ class LogoutView(generics.GenericAPIView):
 
     def post(self, request):
         try:
-            refresh_token = request.data["refresh"]  # Expect refresh token in request body
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
+
+            logger.info(f"Attempting to log out with token: {refresh_token}")
+
+            # Try to blacklist the token
             token = RefreshToken(refresh_token)
             token.blacklist()  # Blacklist the token
-            return Response({"message": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
+
+            return Response({"message": "User signed out successfully."}, status=status.HTTP_205_RESET_CONTENT)
+
         except Exception as e:
-            return Response({"error": "Invalid or missing refresh token."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-# class LogoutView(APIView):
-#     permission_classes = [IsAuthenticated]  # Require authentication
-#
-#     def post(self, request):
-#         try:
-#             refresh_token = request.data["refresh"]  # Expect refresh token in request body
-#             token = RefreshToken(refresh_token)
-#             token.blacklist()  # Blacklist the token
-#             return Response({"message": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
-#         except Exception as e:
-#             return Response({"error": "Invalid or missing refresh token."}, status=status.HTTP_400_BAD_REQUEST)
-
+            logger.error(f"Error during logout: {e}")
+            return Response({"error": "Invalid or expired refresh token."}, status=status.HTTP_400_BAD_REQUEST)
