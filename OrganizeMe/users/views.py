@@ -57,7 +57,7 @@ class LoginView(generics.GenericAPIView):
 
 
 
-class LogoutView(APIView):
+class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]  # Require authentication
 
     def post(self, request):
@@ -68,4 +68,19 @@ class LogoutView(APIView):
             return Response({"message": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"error": "Invalid or missing refresh token."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+# class LogoutView(APIView):
+#     permission_classes = [IsAuthenticated]  # Require authentication
+#
+#     def post(self, request):
+#         try:
+#             refresh_token = request.data["refresh"]  # Expect refresh token in request body
+#             token = RefreshToken(refresh_token)
+#             token.blacklist()  # Blacklist the token
+#             return Response({"message": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
+#         except Exception as e:
+#             return Response({"error": "Invalid or missing refresh token."}, status=status.HTTP_400_BAD_REQUEST)
 
