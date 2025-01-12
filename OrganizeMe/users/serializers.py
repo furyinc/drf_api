@@ -13,31 +13,6 @@ class VerifyEmailSerializer(serializers.Serializer):
 
 
 
-
-
-# class LoginSerializer(serializers.Serializer):
-#     email = serializers.EmailField()
-#     password = serializers.CharField(write_only=True)
-#
-#     def validate(self, attrs):
-#         email = attrs.get('email')
-#         password = attrs.get('password')
-#
-#         user = User.objects.filter(email=email).first()
-#         if not user or not user.check_password(password):
-#             raise serializers.ValidationError("Invalid credentials")
-#         if not user.is_verified:
-#             raise serializers.ValidationError("Email not verified")
-#
-#         tokens = RefreshToken.for_user(user)
-#         return {
-#             'refresh': str(tokens),
-#             'access': str(tokens.access_token),
-#         }
-
-
-
-
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
@@ -66,11 +41,6 @@ class LoginSerializer(serializers.Serializer):
             'access': str(tokens.access_token),
             'username': user.username  # Include username in the response
         }
-
-
-
-
-
 
 
 

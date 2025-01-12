@@ -202,13 +202,20 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Access token valid for 30 minutes
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token valid for 1 day
+#     'ROTATE_REFRESH_TOKENS': True,  # Set to True to rotate refresh tokens on each use
+#     'BLACKLIST_AFTER_ROTATION': True,
+#     'AUTH_HEADER_TYPES': ('Bearer',),  # Use 'Bearer' prefix for tokens
+#     'ALGORITHM': 'HS256',  # Token signing algorithm
+# }
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Access token valid for 30 minutes
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token valid for 1 day
-    'ROTATE_REFRESH_TOKENS': False,  # Set to True to rotate refresh tokens on each use
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),  # Use 'Bearer' prefix for tokens
-    'ALGORITHM': 'HS256',  # Token signing algorithm
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'ALGORITHM': 'HS256',
 }
-
-
