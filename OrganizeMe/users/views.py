@@ -57,7 +57,7 @@ class LoginView(generics.GenericAPIView):
 
 
 class LogoutView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]  # Require authentication
+    permission_classes = [AllowAny]  # Require authentication
 
     def post(self, request):
         refresh_token = request.data.get("refresh")
