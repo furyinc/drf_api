@@ -210,4 +210,10 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),  # Authorization header type
     'ALGORITHM': 'HS256',  # Encryption algorithm
     'UPDATE_LAST_LOGIN': True,  # Update the user's last login timestamp
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
 }

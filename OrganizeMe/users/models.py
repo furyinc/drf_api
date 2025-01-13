@@ -1,7 +1,8 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
 import random
 import string
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
@@ -15,3 +16,19 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'email'  # Log in with email instead of username
     REQUIRED_FIELDS = ['username']  # Username is still required
+
+
+
+
+
+class BlacklistedToken(models.Model):
+    token = models.CharField(max_length=500, unique=True)
+    blacklisted_at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def add(cls, token):
+        cls.objects.create(token=str(token))
+
+    @classmethod
+    def is_blacklisted(cls, token):
+        return cls.objects.filter(token=str(token)).exists()
