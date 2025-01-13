@@ -104,12 +104,8 @@ class LoginView(generics.GenericAPIView):
 
 
 
-
-
-
-
 class LogoutView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         # Extract the refresh token from the request body
@@ -126,8 +122,14 @@ class LogoutView(generics.GenericAPIView):
             status=status.HTTP_205_RESET_CONTENT
         )
 
-        # Blacklist the token (this operation won't affect the above response)
-        token = RefreshToken(refresh_token)
-        token.blacklist()
+
+        # Blacklist the token (executed after sending the response)
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except Exception:
+            pass  # Silently handle any exceptions during blacklisting
 
         return response
+
+
