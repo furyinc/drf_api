@@ -20,12 +20,15 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT', default='5432'),  # Default to 5432 if not set
+        'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL
+        'NAME': config('DB_NAME'),  # Database name from .env
+        'USER': config('DB_USER'),  # Database user from .env
+        'PASSWORD': config('DB_PASSWORD'),  # Database password from .env
+        'HOST': config('DB_HOST', default='localhost'),  # Database host (default to 'localhost')
+        'PORT': config('DB_PORT', cast=int, default=5432),  # PostgreSQL default port (default to 5432)
+        'OPTIONS': {
+            'options': '-c timezone=UTC'  # Ensure the database operates in UTC
+        },
     }
 }
 
@@ -120,16 +123,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'OrganiTask.wsgi.application'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL
-        'NAME': config('DB_NAME'),  # Database name from .env
-        'USER': config('DB_USER'),  # Database user from .env
-        'PASSWORD': config('DB_PASSWORD'),  # Database password from .env
-        'HOST': config('DB_HOST', default='localhost'),  # Database host (default to 'localhost')
-        'PORT': config('DB_PORT', cast=int, default=5432),  # PostgreSQL default port (default to 5432)
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL
+#         'NAME': config('DB_NAME'),  # Database name from .env
+#         'USER': config('DB_USER'),  # Database user from .env
+#         'PASSWORD': config('DB_PASSWORD'),  # Database password from .env
+#         'HOST': config('DB_HOST', default='localhost'),  # Database host (default to 'localhost')
+#         'PORT': config('DB_PORT', cast=int, default=5432),  # PostgreSQL default port (default to 5432)
+#     }
+# }
 
 
 

@@ -88,32 +88,4 @@ class LogoutView(generics.GenericAPIView):
         serializer.save()
         return response
 
-# class LogoutView(generics.GenericAPIView):
-#     permission_classes = [AllowAny]
-#
-#     def post(self, request):
-#         # Extract the refresh token from the request body
-#         refresh_token = request.data.get("refresh")
-#         if not refresh_token:
-#             return Response(
-#                 {"error": "Refresh token is required."},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#
-#         # Send success message before blacklisting the token
-#         response = Response(
-#             {"message": "User successfully logged out."},
-#             status=status.HTTP_205_RESET_CONTENT
-#         )
-#
-#
-#         # Blacklist the token (executed after sending the response)
-#         try:
-#             token = RefreshToken(refresh_token)
-#             token.blacklist()
-#         except Exception:
-#             pass  # Silently handle any exceptions during blacklisting
-#
-#         return response
-
 
