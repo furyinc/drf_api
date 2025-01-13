@@ -3,6 +3,13 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 import random
 from django.core.mail import EmailMessage
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
+from rest_framework import serializers, generics, status
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework.permissions import AllowAny
+
 
 User = get_user_model()
 
@@ -143,3 +150,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         email.send()
 
         return user
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    default_error_messages = {
+        'bad_token': 'Token is expired or invalid'
+    }
+
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError:
+            self.fail('bad_token')

@@ -20,6 +20,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import LogoutSerializer
 
 
 User = get_user_model()
@@ -66,55 +67,16 @@ class LoginView(generics.GenericAPIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-
-
-
-
-# class LogoutView(APIView):
-#     permission_classes = [IsAuthenticated]
-#
-#     def post(self, request):
-#         refresh_token = request.data.get("refresh")
-#         if not refresh_token:
-#             return Response(
-#                 {"error": "Refresh token is required."},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#
-#         try:
-#             token = RefreshToken(refresh_token)
-#             token.blacklist()  # Blacklist the token to invalidate it
-#             return Response(
-#                 {"message": "Successfully logged out."},
-#                 status=status.HTTP_205_RESET_CONTENT
-#             )
-#         except TokenError as e:
-#             return Response(
-#                 {"error": "Invalid or expired refresh token."},
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-#         except Exception as e:
-#             return Response(
-#                 {"error": f"An unexpected error occurred: {str(e)}"},
-#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#             )
-
-
-
-
-
-
 class LogoutView(generics.GenericAPIView):
     permission_classes = [AllowAny]
+    serializer_class = LogoutSerializer
 
     def post(self, request):
-        # Extract the refresh token from the request body
-        refresh_token = request.data.get("refresh")
-        if not refresh_token:
-            return Response(
-                {"error": "Refresh token is required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer = self.get_serializer(data=request.data)
+
+        # Validate the refresh token
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Send success message before blacklisting the token
         response = Response(
@@ -122,14 +84,36 @@ class LogoutView(generics.GenericAPIView):
             status=status.HTTP_205_RESET_CONTENT
         )
 
-
-        # Blacklist the token (executed after sending the response)
-        try:
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-        except Exception:
-            pass  # Silently handle any exceptions during blacklisting
-
+        # Blacklist the token after sending the response
+        serializer.save()
         return response
+
+# class LogoutView(generics.GenericAPIView):
+#     permission_classes = [AllowAny]
+#
+#     def post(self, request):
+#         # Extract the refresh token from the request body
+#         refresh_token = request.data.get("refresh")
+#         if not refresh_token:
+#             return Response(
+#                 {"error": "Refresh token is required."},
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+#
+#         # Send success message before blacklisting the token
+#         response = Response(
+#             {"message": "User successfully logged out."},
+#             status=status.HTTP_205_RESET_CONTENT
+#         )
+#
+#
+#         # Blacklist the token (executed after sending the response)
+#         try:
+#             token = RefreshToken(refresh_token)
+#             token.blacklist()
+#         except Exception:
+#             pass  # Silently handle any exceptions during blacklisting
+#
+#         return response
 
 

@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
-DEBUG = os.environ.get('DEBUG') == 'False'
+DEBUG = os.environ.get('DEBUG') == 'True'
 
 # Database configuration
 
@@ -54,10 +54,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Add this at the top
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -209,11 +209,4 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,  # Blacklist refresh tokens after rotation
     'AUTH_HEADER_TYPES': ('Bearer',),  # Authorization header type
     'ALGORITHM': 'HS256',  # Encryption algorithm
-    'UPDATE_LAST_LOGIN': True,  # Update the user's last login timestamp
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
 }
