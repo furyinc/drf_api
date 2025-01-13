@@ -10,7 +10,6 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
-import logging
 
 User = get_user_model()
 
@@ -56,8 +55,11 @@ class LoginView(generics.GenericAPIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-logger = logging.getLogger(__name__)
 
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]  # Require authentication
@@ -67,8 +69,9 @@ class LogoutView(generics.GenericAPIView):
         if not refresh_token:
             return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Blacklist the token
-        token = RefreshToken(refresh_token)
-        token.blacklist()  # Blacklist the token
-
-        return Response({"message": "User signed out successfully."}, status=status.HTTP_205_RESET_CONTENT)
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()  # Blacklist the token
+            return Response({"message": "User signed out successfully."}, status=status.HTTP_205_RESET_CONTENT)
+        except TokenError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
