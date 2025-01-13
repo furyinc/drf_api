@@ -66,8 +66,16 @@ class LoginView(generics.GenericAPIView):
 
 
 
+
+import logging
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.generics import GenericAPIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
 logger = logging.getLogger(__name__)
-class LogoutView(generics.GenericAPIView):
+
+class LogoutView(GenericAPIView):
     permission_classes = [AllowAny]  # No authentication required for logout
 
     def post(self, request):
@@ -79,22 +87,16 @@ class LogoutView(generics.GenericAPIView):
             # Log the attempt to blacklist
             logger.info(f"Received token for logout: {refresh_token}")
 
-            # Send the success response immediately
-            response = Response({"message": "User logged out successfully."}, status=status.HTTP_205_RESET_CONTENT)
+            # Print and log the success message
+            success_message = "User logged out successfully."
+            logger.info(success_message)
 
-            # Blacklist the token in the background
-            threading.Thread(target=self.blacklist_token, args=(refresh_token,)).start()
+            # Blacklist the token
+            token = RefreshToken(refresh_token)
+            token.blacklist()
 
-            return response
+
+            return Response({"message": success_message}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             logger.error(f"Error during logout: {e}")
             return Response({"error": "Invalid or expired refresh token."}, status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def blacklist_token(refresh_token):
-        try:
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-            logger.info(f"Successfully blacklisted token: {refresh_token}")
-        except Exception as e:
-            logger.error(f"Failed to blacklist token: {refresh_token}. Error: {e}")
