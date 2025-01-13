@@ -63,19 +63,12 @@ class LogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]  # Require authentication
 
     def post(self, request):
-        try:
-            refresh_token = request.data.get("refresh")
-            if not refresh_token:
-                return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
 
-            logger.info(f"Attempting to log out with token: {refresh_token}")
+        # Blacklist the token
+        token = RefreshToken(refresh_token)
+        token.blacklist()  # Blacklist the token
 
-            # Try to blacklist the token
-            token = RefreshToken(refresh_token)
-            token.blacklist()  # Blacklist the token
-
-            return Response({"message": "User signed out successfully."}, status=status.HTTP_205_RESET_CONTENT)
-
-        except Exception as e:
-            logger.error(f"Error during logout: {e}")
-            return Response({"error": "Invalid or expired refresh token."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "User signed out successfully."}, status=status.HTTP_205_RESET_CONTENT)
