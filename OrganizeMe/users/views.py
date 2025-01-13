@@ -28,6 +28,11 @@ from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from asgiref.sync import sync_to_async
+import logging
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.generics import GenericAPIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 User = get_user_model()
@@ -78,32 +83,31 @@ class LoginView(generics.GenericAPIView):
 
 
 
+
+
 logger = logging.getLogger(__name__)
 
 class LogoutView(GenericAPIView):
     permission_classes = [AllowAny]  # No authentication required for logout
 
-    async def post(self, request):
+    def post(self, request):
         refresh_token = request.data.get("refresh")
         if not refresh_token:
             return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Send the success response immediately
-        response = Response({"message": "User logged out successfully."}, status=status.HTTP_205_RESET_CONTENT)
-
-        # Log the attempt to blacklist the token and process blacklisting asynchronously
+        # Log the token received
         logger.info(f"Received token for logout: {refresh_token}")
 
-        # Run token blacklisting in the background without blocking the main thread
-        await self.blacklist_token(refresh_token)
+        # Send the response before token processing
+        response = Response({"message": "User logged out successfully."}, status=status.HTTP_205_RESET_CONTENT)
 
-        return response
-
-    @sync_to_async
-    def blacklist_token(self, refresh_token):
         try:
+            # Blacklist the refresh token
             token = RefreshToken(refresh_token)
             token.blacklist()
             logger.info(f"Successfully blacklisted token: {refresh_token}")
         except Exception as e:
             logger.error(f"Failed to blacklist token: {refresh_token}. Error: {e}")
+
+        return response
+
