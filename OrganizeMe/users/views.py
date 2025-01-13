@@ -14,8 +14,12 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import status, generics
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import BlacklistedToken
+import threading  # For handling blacklisting in the background
+import logging
 
 User = get_user_model()
 
@@ -61,48 +65,36 @@ class LoginView(generics.GenericAPIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-# class LogoutView(generics.GenericAPIView):
-#     permission_classes = [AllowAny]  # Require authentication
-#
-#     def post(self, request):
-#         refresh_token = request.data.get("refresh")
-#         if not refresh_token:
-#             return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
-#
-#         try:
-#             token = RefreshToken(refresh_token)
-#             token.blacklist()  # Blacklist the refresh token
-#             return Response({"message": "User signed out successfully."}, status=status.HTTP_205_RESET_CONTENT)
-#         except TokenError as e:
-#             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+logger = logging.getLogger(__name__)
+class LogoutView(generics.GenericAPIView):
+    permission_classes = [AllowAny]  # No authentication required for logout
 
-
-
-
-
-class LogoutView(APIView):
     def post(self, request):
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            # Get the refresh token from the request body
-            refresh_token = request.data.get('refresh_token')
-            if not refresh_token:
-                return Response(
-                    {"error": "Refresh token is required."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+            # Log the attempt to blacklist
+            logger.info(f"Received token for logout: {refresh_token}")
 
-            # Blacklist the refresh token
-            token = RefreshToken(refresh_token)
-            BlacklistedToken.add(token)
+            # Send the success response immediately
+            response = Response({"message": "User logged out successfully."}, status=status.HTTP_205_RESET_CONTENT)
 
-            # Return a success response
-            return Response(
-                {"message": "User logged out successfully."},
-                status=status.HTTP_205_RESET_CONTENT
-            )
+            # Blacklist the token in the background
+            threading.Thread(target=self.blacklist_token, args=(refresh_token,)).start()
+
+            return response
         except Exception as e:
-            return Response(
-                {"error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            logger.error(f"Error during logout: {e}")
+            return Response({"error": "Invalid or expired refresh token."}, status=status.HTTP_400_BAD_REQUEST)
+
+    @staticmethod
+    def blacklist_token(refresh_token):
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            logger.info(f"Successfully blacklisted token: {refresh_token}")
+        except Exception as e:
+            logger.error(f"Failed to blacklist token: {refresh_token}. Error: {e}")

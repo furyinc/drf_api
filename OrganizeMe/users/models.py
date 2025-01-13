@@ -19,16 +19,3 @@ class CustomUser(AbstractUser):
 
 
 
-
-
-class BlacklistedToken(models.Model):
-    token = models.CharField(max_length=500, unique=True)
-    blacklisted_at = models.DateTimeField(auto_now_add=True)
-
-    @classmethod
-    def add(cls, token):
-        cls.objects.create(token=str(token))
-
-    @classmethod
-    def is_blacklisted(cls, token):
-        return cls.objects.filter(token=str(token)).exists()
