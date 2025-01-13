@@ -10,10 +10,6 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -26,6 +22,12 @@ from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 import threading
+import logging
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.generics import GenericAPIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from asgiref.sync import sync_to_async
 
 
 User = get_user_model()
@@ -74,12 +76,14 @@ class LoginView(generics.GenericAPIView):
 
 
 
+
+
 logger = logging.getLogger(__name__)
 
 class LogoutView(GenericAPIView):
     permission_classes = [AllowAny]  # No authentication required for logout
 
-    def post(self, request):
+    async def post(self, request):
         refresh_token = request.data.get("refresh")
         if not refresh_token:
             return Response({"error": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
@@ -87,14 +91,16 @@ class LogoutView(GenericAPIView):
         # Send the success response immediately
         response = Response({"message": "User logged out successfully."}, status=status.HTTP_205_RESET_CONTENT)
 
-        # Log the attempt and process token blacklisting in the background
+        # Log the attempt to blacklist the token and process blacklisting asynchronously
         logger.info(f"Received token for logout: {refresh_token}")
-        threading.Thread(target=self.blacklist_token, args=(refresh_token,)).start()
+
+        # Run token blacklisting in the background without blocking the main thread
+        await self.blacklist_token(refresh_token)
 
         return response
 
-    @staticmethod
-    def blacklist_token(refresh_token):
+    @sync_to_async
+    def blacklist_token(self, refresh_token):
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
