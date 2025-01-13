@@ -202,20 +202,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Access token valid for 30 minutes
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token valid for 1 day
-#     'ROTATE_REFRESH_TOKENS': True,  # Set to True to rotate refresh tokens on each use
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     'AUTH_HEADER_TYPES': ('Bearer',),  # Use 'Bearer' prefix for tokens
-#     'ALGORITHM': 'HS256',  # Token signing algorithm
-# }
-
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'ALGORITHM': 'HS256',
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Access token expires in 30 minutes
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token expires in 1 day
+    'ROTATE_REFRESH_TOKENS': True,  # Rotate refresh tokens on each request
+    'BLACKLIST_AFTER_ROTATION': True,  # Blacklist refresh tokens after rotation
+    'AUTH_HEADER_TYPES': ('Bearer',),  # Authorization header type
+    'ALGORITHM': 'HS256',  # Encryption algorithm
+    'UPDATE_LAST_LOGIN': True,  # Update the user's last login timestamp
 }
