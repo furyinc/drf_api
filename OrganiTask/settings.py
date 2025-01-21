@@ -18,19 +18,28 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 # Install dj-database-url if not already installed:
 # pip install dj-database-url
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL
+#         'NAME': config('DB_NAME'),  # Database name from .env
+#         'USER': config('DB_USER'),  # Database user from .env
+#         'PASSWORD': config('DB_PASSWORD'),  # Database password from .env
+#         'HOST': config('DB_HOST', default='localhost'),  # Database host (default to 'localhost')
+#         'PORT': config('DB_PORT', cast=int, default=5432),  # PostgreSQL default port (default to 5432)
+#         'OPTIONS': {
+#             'options': '-c timezone=UTC'  # Ensure the database operates in UTC
+#         },
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL
-        'NAME': config('DB_NAME'),  # Database name from .env
-        'USER': config('DB_USER'),  # Database user from .env
-        'PASSWORD': config('DB_PASSWORD'),  # Database password from .env
-        'HOST': config('DB_HOST', default='localhost'),  # Database host (default to 'localhost')
-        'PORT': config('DB_PORT', cast=int, default=5432),  # PostgreSQL default port (default to 5432)
-        'OPTIONS': {
-            'options': '-c timezone=UTC'  # Ensure the database operates in UTC
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/persistent/db.sqlite3',  # Adjust this path based on Render's setup
     }
 }
+
 
 
 AUTH_USER_MODEL = 'users.CustomUser'

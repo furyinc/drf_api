@@ -1,20 +1,9 @@
 from .serializers import RegisterSerializer, VerifyEmailSerializer, LoginSerializer
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
-from django.core.mail import EmailMessage
 from .serializers import VerifyEmailSerializer
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import LoginSerializer
 import logging
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework import generics, status
 from rest_framework.response import Response
