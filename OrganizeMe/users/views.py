@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LogoutSerializer
-
+from rest_framework_simplejwt.views import TokenViewBase
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
 User = get_user_model()
 
@@ -78,3 +79,12 @@ class LogoutView(generics.GenericAPIView):
         return response
 
 
+
+
+class TokenRefreshView(TokenViewBase):
+    """
+    Custom Token Refresh View.
+    Accepts a valid refresh token and returns a new access token.
+    """
+    serializer_class = TokenRefreshSerializer
+    permission_classes = [AllowAny]
