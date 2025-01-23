@@ -88,6 +88,7 @@ class LogoutView(generics.GenericAPIView):
 
 
 class CustomTokenRefreshView(TokenRefreshView):
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         # Only return the access token, not the refresh token
