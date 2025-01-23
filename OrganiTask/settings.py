@@ -210,8 +210,8 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=30),  # Access token expires in 30 minutes
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token expires in 1 day
-    'ROTATE_REFRESH_TOKENS': True,  # Rotate refresh tokens on each request
-    'BLACKLIST_AFTER_ROTATION': True,  # Blacklist refresh tokens after rotation
+    'ROTATE_REFRESH_TOKENS': False,  # Rotate refresh tokens on each request
+    'BLACKLIST_AFTER_ROTATION': False,  # Blacklist refresh tokens after rotation
     'AUTH_HEADER_TYPES': ('Bearer',),  # Authorization header type
     'ALGORITHM': 'HS256',  # Encryption algorithm
 }
