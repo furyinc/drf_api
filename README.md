@@ -17,7 +17,7 @@ A web application for managing both tasks and notes with a simple, user-friendly
 Feel free to contribute by creating a pull request!
 
 ## 📜 License
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the MIT License
 
 ---
 
