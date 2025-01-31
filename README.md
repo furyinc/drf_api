@@ -2,7 +2,7 @@
 
 A web application for managing both tasks and notes with a simple, user-friendly interface. With a clean and intuitive interface, users can create, view, update, and delete both tasks and notes. It is designed to be simple and user-friendly, making task management and note-taking efficient.
 
-![Interface](OrganiTask/images/light.png)
+![Interface](images/light.png)
 
 
 ## 🔧 Tech Stack
