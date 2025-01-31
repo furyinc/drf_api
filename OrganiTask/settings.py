@@ -1,7 +1,5 @@
 from datetime import timedelta
-import os
 from pathlib import Path
-import dj_database_url
 import os
 from decouple import config
 
@@ -185,13 +183,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Use SMTP for real emails
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Enables SMTP for sending emails
-EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email provider's SMTP host, e.g., 'smtp.gmail.com' for Gmail
-EMAIL_PORT = 587  # Standard port for STARTTLS
-EMAIL_USE_TLS = True  # Enables encryption
-EMAIL_HOST_USER = 'frilancer029@gmail.com'  # Replace with your actual email address
-EMAIL_HOST_PASSWORD = 'xcqv dedl qget cquo'  # Replace with your email account password or app-specific password
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
@@ -208,7 +205,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=30),  # Access token expires in 30 minutes
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Access token expires in 15 minutes
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Refresh token expires in 1 day
     'ROTATE_REFRESH_TOKENS': False,  # Rotate refresh tokens on each request
     'BLACKLIST_AFTER_ROTATION': False,  # Blacklist refresh tokens after rotation
