@@ -18,7 +18,3 @@ Feel free to contribute by creating a pull request!
 
 ## 📜 License
 This project is licensed under the MIT License
-
----
-
-Let me know if you'd like any more adjustments!
