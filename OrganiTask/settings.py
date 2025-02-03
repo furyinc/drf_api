@@ -2,6 +2,8 @@ from datetime import timedelta
 from pathlib import Path
 import os
 from decouple import config
+import os
+import logging
 
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,7 +12,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
 DEBUG = os.environ.get('DEBUG') == 'False'
 
-# Database configuration
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'errors.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 
 
 # Install dj-database-url if not already installed:
