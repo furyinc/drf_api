@@ -1,10 +1,6 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
 import random
 from django.core.mail import EmailMessage
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-
 from rest_framework import serializers, generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
